@@ -40,6 +40,7 @@ namespace Work_with_SQL_Table__HW_4_
                     i++;
                 }
                 reader.Close();
+                if (show) Console.WriteLine($"From the table read {i} rows");
             }
             return Table;
         }
@@ -48,8 +49,7 @@ namespace Work_with_SQL_Table__HW_4_
         {
             if (Table != null)
             {
-                var dateLogo = Table.DateTime.ToString("yyyy-MM-dd HH:mm:ss");
-                string sqlText = String.Format($@"INSERT INTO [dbo].[Log]([Name],[SoldierType],[WeaponType],[HP],[Action],[DateTime]) VALUES ('{Table.Name}','{Table.Type}', '{Table.Weapone}', {Table.HP}, '{Table.Action}', '{dateLogo}');");
+                string sqlText = String.Format($@"INSERT INTO [dbo].[Log]([Name],[SoldierType],[WeaponType],[HP],[Action],[DateTime]) VALUES ('{Table.Name}','{Table.Type}', '{Table.Weapone}', {Table.HP}, '{Table.Action}', '{Table.DateTime.ToString("yyyy-MM-dd HH:mm:ss")}');");
                 SqlCommand command = new SqlCommand(sqlText, connection);
                 Console.WriteLine($"To the table Log added {command.ExecuteNonQuery()} row");
             }
@@ -62,10 +62,12 @@ namespace Work_with_SQL_Table__HW_4_
                 int i = 0;
                 foreach (ObjectLog item in Table)
                 {
-                    var dateLogo = item.DateTime.ToString("yyyy-MM-dd HH:mm:ss");
-                    string sqlText = String.Format($@"INSERT INTO [dbo].[Log]([Name],[SoldierType],[WeaponType],[HP],[Action],[DateTime]) VALUES ('{item.Name}','{item.Type}', '{item.Weapone}', {item.HP}, '{item.Action}', '{dateLogo}');");
-                    SqlCommand command = new SqlCommand(sqlText, connection);
-                    i++;
+                    if (item!=null)
+                    {
+                        string sqlText = String.Format($@"INSERT INTO [dbo].[Log]([Name],[SoldierType],[WeaponType],[HP],[Action],[DateTime]) VALUES ('{item.Name}','{item.Type}', '{item.Weapone}', {item.HP}, '{item.Action}', '{item.DateTime.ToString("yyyy-MM-dd HH:mm:ss")}');");
+                        SqlCommand command = new SqlCommand(sqlText, connection);
+                        i+=command.ExecuteNonQuery();
+                    }
                 }
                 Console.WriteLine($"To the table Log added {i} rows");
             }

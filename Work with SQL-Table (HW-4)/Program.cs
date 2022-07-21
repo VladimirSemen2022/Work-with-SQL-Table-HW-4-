@@ -10,9 +10,7 @@ namespace Work_with_SQL_Table__HW_4_
             SQLTable SQL_obj = SQLTable.GetInstance("Server=DESKTOP-MV43C0T;Database=LogFile;Trusted_Connection=True;");
             
             ObjectLog[] Table1 = SQL_obj.ReadAndShow(true);
-            //SQLobj.Delete(1);
-            //SQLobj.ReadAndShow(true);
-            SQL_obj.Delete("Action", "dead");
+            SQL_obj.Delete("Action", "moves");
             SQL_obj.ReadAndShow(true);
             SQL_obj.Add(Table1);
             SQL_obj.ReadAndShow(true);
