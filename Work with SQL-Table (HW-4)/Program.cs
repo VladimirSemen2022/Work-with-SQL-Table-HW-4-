@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text.Json;
+using Work_with_SQL_Table__HW_4_.Controller;
 
 namespace Work_with_SQL_Table__HW_4_
 {
@@ -7,26 +9,18 @@ namespace Work_with_SQL_Table__HW_4_
     {
         static void Main(string[] args)
         {
-            //Создание класса Singleton (одиночка) для реализации подключения к базе данных SQL с наличием методов чтения, удаления, добавления
-            //const string fileName = "Link.txt";
-            //if (!File.Exists(fileName))
-            //    File.WriteAllText(fileName, "Server=DESKTOP-MV43C0T;Database=LogFile;Trusted_Connection=True;");
+            //Создание строки-подключения к базе SQL используя параметры, сохранненые в файле формата JSON где-то на диске пользователя
+            
+            ConnectionController controller = new ConnectionController(@"D:\DBSetting.json");
+            controller.Download();
 
-            //string link = File.ReadAllText(fileName);
-            //SQLTable.GetInstance(link);
+            //Создание подключения типа Singleton через класс Link используя созданную из файла строку подключения
+            Link newLink = Link.GetInstance(controller.defaultsetting);
 
+            //Чтение данных из БД после подключения и вывод их на экран
+            //ObjectLog[] Table1 = newLink.ReadAndShow(true);
+            newLink.ReadAndShow(true);
 
-            //Singleton класс с подключением к базе SQL из строки, сохраненной в файле
-            //по умолчанию класс получает строку подключения из байла "Link.txt" или можно указать в параметрах
-            //название или полный путь к файлу, хранящему строку подключения к SQL базе
-            Link.GetInstance();
-
-            //ObjectLog[] Table1 = Link.GetInstance().ReadAndShow(true);
-            Link.GetInstance().ReadAndShow(true);
-            Link.GetInstance().Delete("Name", "Ruf");
-            Link.GetInstance().ReadAndShow(true);
-            //Link.GetInstance().Add(Table1);
-            //Link.GetInstance().ReadAndShow(true);
         }
     }
 }

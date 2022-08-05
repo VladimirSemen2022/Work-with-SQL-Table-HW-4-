@@ -1,31 +1,36 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Work_with_SQL_Table__HW_4_
 {
-    public sealed class SQLTable
+    class Link
     {
-        static string connect;
+        static string link;
         public SqlConnection connection { get; private set; }
 
-        private SQLTable()     //Создание подключения к базе SQL
+        private Link()     //Создание подключения к базе SQL
         {
-            connection = new SqlConnection(connect);
+            connection = new SqlConnection(link);
             connection.Open();      //Открытие соединения с базой SQL
         }
 
-        private static SQLTable _instance;     //Внутренняя переменная класса, хранящая соединение с базой 
-        public static SQLTable GetInstance(string connStr)     //Метод создания подключения к базе SQL
+        private static Link _instance;     //Внутренняя переменная класса, хранящая соединение с базой 
+        public static Link GetInstance(DBSettings settings)     //Метод создания подключения к базе SQL
         {
             if (_instance == null)
             {
-                connect = connStr;
-                _instance = new SQLTable();
+                link = settings.ToString();
+                _instance = new Link();
             }
             return _instance;
         }
 
-        public ObjectLog[] ReadAndShow (bool show)  //Если параметр show при обращении к методу равен true то кроме чтения базы, данные также выведутся на экран
+        public ObjectLog[] ReadAndShow(bool show)  //Если параметр show при обращении к методу равен true то кроме чтения базы, данные также выведутся на экран
         {
             ObjectLog[] Table = new ObjectLog[1];
             using (SqlCommand cmd = new SqlCommand("SELECT TOP (1000) [id],[Name],[SoldierType],[WeaponType],[HP],[Action],[DateTime]FROM[LogFile].[dbo].[Log]", connection))
@@ -55,18 +60,18 @@ namespace Work_with_SQL_Table__HW_4_
             }
         }
 
-        public void Add(ObjectLog [] Table)      //Метод записи данных в открытую базу SQL. Данные передаются в виде массива данных класса ObjectLog
+        public void Add(ObjectLog[] Table)      //Метод записи данных в открытую базу SQL. Данные передаются в виде массива данных класса ObjectLog
         {
             if (Table != null)
             {
                 int i = 0;
                 foreach (ObjectLog item in Table)
                 {
-                    if (item!=null)
+                    if (item != null)
                     {
                         string sqlText = String.Format($@"INSERT INTO [dbo].[Log]([Name],[SoldierType],[WeaponType],[HP],[Action],[DateTime]) VALUES ('{item.Name}','{item.Type}', '{item.Weapone}', {item.HP}, '{item.Action}', '{item.DateTime.ToString("yyyy-MM-dd HH:mm:ss")}');");
                         SqlCommand command = new SqlCommand(sqlText, connection);
-                        i+=command.ExecuteNonQuery();
+                        i += command.ExecuteNonQuery();
                     }
                 }
                 Console.WriteLine($"To the table Log added {i} rows");
